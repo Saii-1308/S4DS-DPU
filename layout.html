@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S4DS - Society for Data Science</title>
+    <style>
+        :root {
+            --primary: #2c3e50; /* Deep blue-gray */
+            --secondary: #34495e; /* Darker blue-gray */
+            --accent: #e74c3c; /* Vibrant red */
+            --light: #ecf0f1; /* Light gray background */
+            --dark: #1a252f; /* Dark blue-black */
+            --text: #2c3e50; /* Dark text */
+            --text-light: #7f8c8d; /* Light text */
+            --highlight: #3498db; /* Bright blue for highlights */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.5;
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 0.8rem 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 0.4rem 0;
+            background: rgba(44, 62, 80, 0.98);
+            backdrop-filter: blur(8px);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .logo-img {
+            height: 40px;
+            margin-right: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover .logo-img {
+            transform: rotate(15deg);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        
+        .logo-main {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .logo-sub {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: normal;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.4rem 0;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease, transform 0.3s ease;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+            transform: scaleX(1);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(26, 37, 47, 0.9)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding-top: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(231, 76, 60, 0.1), transparent 70%);
+            z-index: 0;
+        }
+        
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .upcoming-events {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+            border-left: 4px solid var(--accent);
+            animation: pulse 2s infinite;
+        }
+        
+        .upcoming-events h3 {
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .upcoming-events h3 i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .event-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .event-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .event-item h4 {
+            color: white;
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+        
+        .event-item .date {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background: transparent;
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            margin-left: 1rem;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+        
+        section {
+            padding: 4rem 0;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .section-title h2::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 1px;
+            background: var(--text-light);
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.5;
+        }
+        
+        .about-sections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .about-section {
+            flex: 1;
+            min-width: 280px;
+            background: white;
+            padding: 1.8rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 3px solid var(--accent);
+        }
+        
+        .about-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-section h3 {
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            position: relative;
+            padding-bottom: 8px;
+            font-size: 1.3rem;
+        }
+        
+        .about-section h3::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+        
+        .coordinators {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .coordinators:hover {
+            transform: translateY(-3px);
+        }
+        
+        .coordinators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .coordinator-card {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: rgba(236, 240, 241, 0.5);
+            padding: 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 2px solid var(--accent);
+        }
+        
+        .coordinator-card:hover {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transform: translateX(5px);
+        }
+        
+        .coordinator-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+            transition: transform 0.3s ease;
+        }
+        
+        .coordinator-card:hover .coordinator-img {
+            transform: scale(1.05);
+        }
+        
+        .coordinator-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .coordinator-card:hover .coordinator-img img {
+            transform: scale(1.1);
+        }
+        
+        .coordinator-info h4 {
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+        
+        .coordinator-info p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(231, 76, 60, 0.1), transparent 50%);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .event-card:hover::before {
+            opacity: 1;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .event-image {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .event-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            z-index: 1;
+        }
+        
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .event-card:hover .event-image img {
+            transform: scale(1.1);
+        }
+        
+        .event-info {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .event-info h3 {
+            margin-bottom: 0.6rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .event-info .date {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            display: block;
+            font-size: 0.9rem;
+        }
+        
+        .event-info .btn {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.8rem;
+            margin-top: 0.8rem;
+            display: inline-block;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 2rem;
+        }
+        
+        .team-member {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .team-member:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .member-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .member-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(44, 62, 80, 0.7), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .team-member:hover .member-image::after {
+            opacity: 1;
+        }
+        
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .team-member:hover .member-image img {
+            transform: scale(1.1);
+        }
+        
+        .member-info {
+            padding: 1.5rem 1.2rem;
+        }
+        
+        .member-info h3 {
+            margin-bottom: 0.4rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .member-info .position {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: block;
+            font-size: 0.85rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            color: var(--primary);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .join-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            max-width: 700px;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .join-form:hover {
+            transform: translateY(-3px);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: rgba(236, 240, 241, 0.5);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+            outline: none;
+            background: white;
+        }
+        
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            height: 220px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(44, 62, 80, 0.7), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+        
+        .gallery-item i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            color: white;
+            font-size: 2.2rem;
+            opacity: 0;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover i {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .contact-card {
+            flex: 1;
+            min-width: 220px;
+            background: white;
+            padding: 2rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-top: 3px solid var(--accent);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .contact-card:hover i {
+            transform: scale(1.1);
+        }
+        
+        .contact-card h3 {
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            max-width: 700px;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .contact-form:hover {
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, var(--accent), var(--highlight));
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            gap: 1.5rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 220px;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            font-size: 1.2rem;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            background: var(--accent);
+            bottom: -6px;
+            left: 0;
+            border-radius: 2px;
+        }
+        
+        .footer-section p {
+            opacity: 0.8;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.7rem;
+        }
+        
+        .footer-section ul li a {
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--accent);
+            opacity: 1;
+            transform: translateX(3px);
+        }
+        
+        .social-links-footer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .social-links-footer a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        .social-links-footer a:hover {
+            color: var(--accent);
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg);
+            color: var(--accent);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: row;
+            }
+            
+            nav {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - 70px);
+                background: var(--dark);
+                transition: all 0.4s ease;
+                z-index: 999;
+                box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2);
+            }
+            
+            nav.active {
+                left: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                padding: 1.5rem;
+                height: 100%;
+            }
+            
+            nav ul li {
+                margin: 0.8rem 0;
+            }
+            
+            .hamburger {
+                display: block;
+                z-index: 1000;
+            }
+            
+            .hamburger.active i::before {
+                content: '\f00d';
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .about-sections {
+                flex-direction: column;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+            }
+            
+            .upcoming-events {
+                padding: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 0.9rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.6rem;
+            }
+            
+            .logo {
+                flex-direction: row;
+                text-align: left;
+            }
+            
+            .logo-img {
+                margin-right: 8px;
+                margin-bottom: 0;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+            }
+            
+            .upcoming-events h3 {
+                font-size: 1.1rem;
+            }
+            
+            .event-item h4 {
+                font-size: 0.9rem;
+            }
+            
+            .event-item .date {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="header">
+        <div class="container header-container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/40x40/2c3e50/ffffff?text=S4DS" alt="S4DS Logo" class="logo-img">
+                <div class="logo-text">
+                    <div class="logo-main">S4DS</div>
+                    <div class="logo-sub">Empowering Data Science Enthusiasts</div>
+                </div>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#join">Join Us</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <h1>Society for Data Science</h1>
+            <p>Empowering the next generation of data scientists through innovative learning, collaboration, and real-world applications.</p>
+            <div class="btn-group">
+                <a href="#join" class="btn">Join Now</a>
+                <a href="#events" class="btn btn-outline">Upcoming Events</a>
+            </div>
+            
+            <!-- Upcoming Events Highlight -->
+            <div class="upcoming-events">
+                <h3><i class="fas fa-calendar-alt"></i> Upcoming Events</h3>
+                <div class="event-item">
+                    <h4>Python for Data Science Bootcamp</h4>
+                    <span class="date">June 15, 2023 | 10:00 AM</span>
+                </div>
+                <div class="event-item">
+                    <h4>Annual Data Hackathon</h4>
+                    <span class="date">July 22-23, 2023 | 9:00 AM</span>
+                </div>
+                <div class="event-item">
+                    <h4>Data Careers Panel</h4>
+                    <span class="date">August 5, 2023 | 2:00 PM</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Us</h2>
+            </div>
+            
+            <div class="about-sections">
+                <div class="about-section">
+                    <h3>Our History</h3>
+                    <p>Founded in 2018, the Society for Data Science (S4DS) began as a small group of students passionate about data analytics. What started as informal study sessions quickly grew into a recognized student organization with over 200 active members.</p>
+                    <p>In our first year, we hosted 3 workshops. Today, we organize monthly events, annual hackathons, and collaborate with industry leaders to provide our members with unparalleled learning opportunities.</p>
+                </div>
+                
+                <div class="about-section">
+                    <h3>Vision & Mission</h3>
+                    <p><strong>Vision:</strong> To create a world where data literacy is accessible to all, and data-driven solutions transform every sector of society.</p>
+                    <p><strong>Mission:</strong> We empower students from all disciplines to harness the power of data through education, practical experience, and community building.</p>
+                    <p><strong>Core Values:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Inclusive learning environment</li>
+                        <li>Practical, hands-on education</li>
+                        <li>Collaboration across disciplines</li>
+                        <li>Ethical data practices</li>
+                        <li>Community impact through data</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="coordinators">
+                <h3 style="color: var(--primary); text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;">Our Faculty Coordinators</h3>
+                <div class="coordinators-grid">
+                    <div class="coordinator-card">
+                        <div class="coordinator-img">
+                            <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Faculty Coordinator">
+                        </div>
+                        <div class="coordinator-info">
+                            <h4>Dr. Priya Sharma</h4>
+                            <p>Professor of Computer Science</p>
+                            <p>Head of Data Science Department</p>
+                        </div>
+                    </div>
+                    <div class="coordinator-card">
+                        <div class="coordinator-img">
+                            <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Faculty Coordinator">
+                        </div>
+                        <div class="coordinator-info">
+                            <h4>Dr. Rajesh Patel</h4>
+                            <p>Associate Professor of Statistics</p>
+                            <p>Machine Learning Specialist</p>
+                        </div>
+                    </div>
+                    <div class="coordinator-card">
+                        <div class="coordinator-img">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Faculty Coordinator">
+                        </div>
+                        <div class="coordinator-info">
+                            <h4>Dr. Ananya Gupta</h4>
+                            <p>Assistant Professor of AI</p>
+                            <p>Data Visualization Expert</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="events" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Events</h2>
+            </div>
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Data Workshop">
+                    </div>
+                    <div class="event-info">
+                        <h3>Python for Data Science Bootcamp</h3>
+                        <span class="date">June 15, 2023 | 10:00 AM</span>
+                        <p>A comprehensive workshop covering Python basics, NumPy, Pandas, and data visualization with Matplotlib and Seaborn.</p>
+                        <a href="#" class="btn">Register Now</a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Hackathon">
+                    </div>
+                    <div class="event-info">
+                        <h3>Annual Data Hackathon</h3>
+                        <span class="date">July 22-23, 2023 | 9:00 AM</span>
+                        <p>24-hour competition where teams solve real-world problems using data science and machine learning with industry datasets.</p>
+                        <a href="#" class="btn">Register Now</a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Guest Lecture">
+                    </div>
+                    <div class="event-info">
+                        <h3>Data Careers Panel</h3>
+                        <span class="date">August 5, 2023 | 2:00 PM</span>
+                        <p>Panel discussion with data professionals from Google, Amazon, and local startups about career paths in data science.</p>
+                        <a href="#" class="btn">Register Now</a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Machine Learning">
+                    </div>
+                    <div class="event-info">
+                        <h3>ML Workshop Series</h3>
+                        <span class="date">September 10-12, 2023 | 3:00 PM</span>
+                        <p>Three-day intensive workshop covering machine learning fundamentals with hands-on projects using Scikit-learn.</p>
+                        <a href="#" class="btn">Register Now</a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Conference">
+                    </div>
+                    <div class="event-info">
+                        <h3>Annual Data Conference</h3>
+                        <span class="date">October 15, 2023 | 9:00 AM</span>
+                        <p>Our flagship event featuring keynote speakers, paper presentations, and networking with industry professionals.</p>
+                        <a href="#" class="btn">Register Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Team</h2>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>Sarah Johnson</h3>
+                        <span class="position">President</span>
+                        <p>Computer Science Senior with a passion for machine learning and community building.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>Michael Chen</h3>
+                        <span class="position">Vice President</span>
+                        <p>Statistics major focused on data visualization and statistical modeling techniques.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>Emily Rodriguez</h3>
+                        <span class="position">Events Coordinator</span>
+                        <p>Business Analytics student specializing in marketing analytics and event planning.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>David Kim</h3>
+                        <span class="position">Technical Lead</span>
+                        <p>AI researcher with expertise in deep learning and natural language processing.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>Priya Patel</h3>
+                        <span class="position">Outreach Coordinator</span>
+                        <p>Data Science major with experience in community engagement and partnerships.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>James Wilson</h3>
+                        <span class="position">Workshop Lead</span>
+                        <p>Computer Engineering student specializing in big data and distributed systems.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>Sophia Martinez</h3>
+                        <span class="position">Marketing Lead</span>
+                        <p>Design and Communications major with a passion for data storytelling.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Team Member">
+                    </div>
+                    <div class="member-info">
+                        <h3>Ryan Thompson</h3>
+                        <span class="position">Research Coordinator</span>
+                        <p>Mathematics graduate student focusing on algorithmic optimization.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="join" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Join Us</h2>
+            </div>
+            <div class="join-form">
+                <form id="membership-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="major">Major/Department</label>
+                        <input type="text" id="major" name="major" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year of Study</label>
+                        <select id="year" name="year" required>
+                            <option value="">Select Year</option>
+                            <option value="Freshman">Freshman</option>
+                            <option value="Sophomore">Sophomore</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Graduate">Graduate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="experience">Data Science Experience Level</label>
+                        <select id="experience" name="experience" required>
+                            <option value="">Select Level</option>
+                            <option value="Beginner">Beginner (0-6 months)</option>
+                            <option value="Intermediate">Intermediate (6 months - 2 years)</option>
+                            <option value="Advanced">Advanced (2+ years)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="interests">What areas of data science interest you most?</label>
+                        <textarea id="interests" name="interests"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Gallery</h2>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Workshop">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Team Meeting">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Hackathon">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Guest Lecture">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Group Photo">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Workshop">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Conference">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Networking">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="blog" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Blog</h2>
+            </div>
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Blog Post">
+                    </div>
+                    <div class="event-info">
+                        <h3>Getting Started with Data Science</h3>
+                        <span class="date">May 10, 2023</span>
+                        <p>A beginner's guide to entering the world of data science, with recommended resources and learning paths for different backgrounds.</p>
+                        <a href="#" style="color: var(--accent); font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s ease;">Read More <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Blog Post">
+                    </div>
+                    <div class="event-info">
+                        <h3>Interview with a Data Scientist</h3>
+                        <span class="date">April 22, 2023</span>
+                        <p>We sat down with Jane Doe from TechCorp to discuss career paths, daily work life, and advice for aspiring data scientists.</p>
+                        <a href="#" style="color: var(--accent); font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s ease;">Read More <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Blog Post">
+                    </div>
+                    <div class="event-info">
+                        <h3>Data Visualization Techniques</h3>
+                        <span class="date">March 15, 2023</span>
+                        <p>Explore the best tools and techniques for creating impactful data visualizations that tell compelling stories with your data.</p>
+                        <a href="#" style="color: var(--accent); font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s ease;">Read More <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Blog Post">
+                    </div>
+                    <div class="event-info">
+                        <h3>Machine Learning in Healthcare</h3>
+                        <span class="date">February 28, 2023</span>
+                        <p>How machine learning is transforming healthcare with predictive analytics, diagnosis assistance, and personalized medicine.</p>
+                        <a href="#" style="color: var(--accent); font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s ease;">Read More <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Blog Post">
+                    </div>
+                    <div class="event-info">
+                        <h3>Ethics in Data Science</h3>
+                        <span class="date">January 12, 2023</span>
+                        <p>Exploring the ethical considerations every data scientist should be aware of when working with sensitive data and algorithms.</p>
+                        <a href="#" style="color: var(--accent); font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s ease;">Read More <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+            </div>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email</h3>
+                    <p>contact@s4ds.org</p>
+                    <p>membership@s4ds.org</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Location</h3>
+                    <p>University Campus</p>
+                    <p>Data Science Building, Room 205</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-phone"></i>
+                    <h3>Phone</h3>
+                    <p>+1 (555) 123-4567</p>
+                    <p>Mon-Fri: 9AM - 5PM</p>
+                </div>
+            </div>
+            <div class="contact-form">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="contact-name">Name</label>
+                        <input type="text" id="contact-name" name="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email</label>
+                        <input type="email" id="contact-email" name="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-subject">Subject</label>
+                        <input type="text" id="contact-subject" name="contact-subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" name="contact-message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About S4DS</h3>
+                    <p>The Society for Data Science is a student-run organization dedicated to promoting data literacy and fostering a community of data enthusiasts through education, collaboration, and real-world applications.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#team">Team</a></li>
+                        <li><a href="#join">Join Us</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Learning Materials</a></li>
+                        <li><a href="#">Career Opportunities</a></li>
+                        <li><a href="#">Research Papers</a></li>
+                        <li><a href="#">Tutorial Videos</a></li>
+                        <li><a href="#">Recommended Books</a></li>
+                        <li><a href="#">Dataset Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="social-links-footer">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Society for Data Science. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="image-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <img id="modal-image" src="" alt="Enlarged view">
+        </div>
+    </div>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        
+        hamburger.addEventListener('click', function() {
+            nav.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', function() {
+                nav.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('membership-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your application! We will contact you soon.');
+            this.reset();
+        });
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+
+        // Image modal
+        function openModal(imageSrc) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            
+            modal.classList.add('show');
+            modalImg.src = imageSrc;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside the image
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('image-modal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Animation on scroll
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.section-title, .event-card, .team-member, .contact-card, .about-section, .coordinator-card, .gallery-item, .footer-section');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Set initial state for animated elements
+        document.querySelectorAll('.section-title, .event-card, .team-member, .contact-card, .about-section, .coordinator-card, .gallery-item, .footer-section').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+
+        // Add hover effect to blog read more links
+        document.querySelectorAll('#blog a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
+</body>
+</html>
