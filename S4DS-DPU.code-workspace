@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "S4DS-DPU",
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "S4DS-DPU"
+	}
+}
